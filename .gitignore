@@ -1,4 +1,5 @@
 lambda-function.zip
+terraform-imports/
 
 # Local .terraform directories
 **/.terraform/*

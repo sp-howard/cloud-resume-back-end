@@ -1,9 +1,8 @@
 # Lambda
-resource "aws_lambda_function" "viewcount_function" {
-  function_name = "unknown"
-  role = "unknown"
-}
-
+# resource "aws_lambda_function" "viewcount-function" {
+#   function_name = "viewcount-function"
+#   role = "unknown"
+# }
 
 # Route53
 
@@ -11,4 +10,5 @@ resource "aws_lambda_function" "viewcount_function" {
 
 # DynamoDB
 
+# S3
 
