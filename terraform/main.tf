@@ -1,4 +1,4 @@
-# --- Lambda Function ---
+################# Lambda #################
 
 # Create Bucket
 resource "aws_s3_bucket" "lambda-function-bucket" {
@@ -85,10 +85,36 @@ resource "aws_iam_role_policy_attachment" "AmazonDynamoDBFullAccess" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
-# --- Route53 ---
+################# DynamoDB #################
 
-# --- API Gateway ---
+resource "aws_dynamodb_table" "viewcount-table" {
+  name           = "viewcount-table"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "page-visit"
+  table_class    = "STANDARD"
 
-# --- DynamoDB ---
+  attribute {
+      name = "page-visit"
+      type = "S"
+  }
+
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+
+  tags = {
+    Name = "View Count Table"
+  }
+}
+
+
+################# Route53 #################
+
+################# API Gateway #################
+
+
 
 
