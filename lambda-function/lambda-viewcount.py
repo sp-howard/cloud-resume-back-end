@@ -6,10 +6,8 @@ def lambda_handler(event: any, context: any):
 
     # Create a DynamoDB client
     dynamodb = boto3.resource("dynamodb")
-    # table_name = os.environ["TABLE_NAME"]
-    # table = dynamodb.Table(table_name)
-    table = dynamodb.Table('viewcount-table')
-    print('hello')
+    table_name = os.environ["TABLE_NAME"]
+    table = dynamodb.Table(table_name)
 
     # Does 'viewed' table item exist? If not, initialize with viewcount value of 0
     def get_key():
@@ -21,7 +19,7 @@ def lambda_handler(event: any, context: any):
             return table.get_item(Key={'viewed': 'True'})['Item']
     
     key = get_key()
-    print(key)
+
     # Get current viewcount value
     viewcount = key['viewcount']
 
@@ -41,5 +39,3 @@ def lambda_handler(event: any, context: any):
             'viewcount': updated_viewcount
         }
     }
-
-lambda_handler('','')
