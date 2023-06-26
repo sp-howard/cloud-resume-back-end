@@ -1,8 +1,8 @@
-################# Lambda #################
+################# Lambda ##################
 
 # Create Bucket
 resource "aws_s3_bucket" "lambda-function-bucket" {
-  bucket = "lambda-function-sph-crc"
+  bucket = "lambda-viewcount-function-sph"
 
   tags = {
     Name = "Container for Lambda Function."
@@ -35,7 +35,7 @@ resource "aws_lambda_function" "lambda-function-viewcount" {
   s3_key    = aws_s3_object.lambda-function-object.key
 
   runtime = "python3.10"
-  handler = "lambda-visitcount.handler"
+  handler = "${var.lambda-function-file-name}.lambda_handler"
 
   source_code_hash = data.archive_file.lambda-function-file.output_base64sha256
 
@@ -43,7 +43,7 @@ resource "aws_lambda_function" "lambda-function-viewcount" {
 
   environment {
     variables = {
-      TABLE_NAME = "viewcount-table"
+      TABLE_NAME = aws_dynamodb_table.viewcount-table.name
     }
   }
 }
@@ -92,26 +92,19 @@ resource "aws_dynamodb_table" "viewcount-table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "page-visit"
+  hash_key       = "viewed"
   table_class    = "STANDARD"
 
   attribute {
-      name = "page-visit"
-      type = "S"
+    name = "viewed"
+    type = "S"
   }
-
-  ttl {
-    attribute_name = "TimeToExist"
-    enabled        = false
-  }
-
-  tags = {
-    Name = "View Count Table"
-  }
+  
 }
 
-
 ################# Route53 #################
+
+
 
 ################# API Gateway #################
 
