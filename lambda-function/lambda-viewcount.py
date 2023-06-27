@@ -35,7 +35,5 @@ def lambda_handler(event: any, context: any):
         'headers': {
             'Content-Type': 'application/json',
         },
-        'body': {
-            'viewcount': updated_viewcount
-        }
+        'body': updated_viewcount
     }
