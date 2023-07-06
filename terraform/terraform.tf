@@ -3,7 +3,7 @@ terraform {
     organization = "sp-howard"
 
     workspaces {
-      name = "cloud-resume-challenge-backend"
+      name = "cloud-resume-challenge-frontend"
     }
   }
 
@@ -14,7 +14,12 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
+
 provider "aws" {
   region = var.aws_region
+}
+
+provider "aws" {
+  alias  = "acm_provider"
+  region = "us-east-1"
 }
