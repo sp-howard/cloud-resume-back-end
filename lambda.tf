@@ -13,8 +13,8 @@ resource "aws_s3_bucket" "lambda-function-bucket" {
 data "archive_file" "lambda-function-file" {
   type = "zip"
 
-  source_dir  = "./lambda-function"
-  output_path = "./lambda-function.zip"
+  source_file  = "lambda-function.py"
+  output_path = "lambda-function.zip"
 }
 
 # Add Python Script to S3 Bucket
