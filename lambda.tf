@@ -1,4 +1,4 @@
-################# Lambda ##################
+################# Lambda ###################
 
 # Create Bucket
 resource "aws_s3_bucket" "lambda-function-bucket" {
