@@ -4,7 +4,7 @@ variable "aws_region" {
 
 variable "lambda-function-file-name" {
   type    = string
-  default = "lambda-viewcount"
+  default = "lambda-function"
 }
 
 variable "domain_name" {
