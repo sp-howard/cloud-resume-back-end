@@ -15,7 +15,7 @@ env:
 
 jobs:
   terraform:
-    if: github.repository != 'sp-howard/cloud-resume-back-end'
+    if: github.repository == 'sp-howard/cloud-resume-back-end'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
