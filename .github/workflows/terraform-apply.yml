@@ -8,12 +8,14 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: "sp-howard"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+
   TF_WORKSPACE: "cloud-resume-front-end-gh"
   CONFIG_DIRECTORY: "./"
 
+
 jobs:
   terraform:
-    if: github.repository != 'sp-howard/cloud-resume-front-end'
+    if: github.repository != 'sp-howard/cloud-resume-back-end'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
