@@ -38,10 +38,10 @@ resource "aws_route53domains_registered_domain" "domain" {
   }
   name_server {
     name = aws_route53_zone.main.name_servers[3]
-  }    
+  }
 }
 
-  /* depends_on = [output.route53_ns] */
+/* depends_on = [output.route53_ns] */
 
 
 # For ACM certificate validation

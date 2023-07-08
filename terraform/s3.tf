@@ -22,46 +22,32 @@ resource "aws_s3_bucket_website_configuration" "www_bucket" {
   }
 }
 
-resource "aws_s3_bucket_cors_configuration" "www_bucket" {
-  bucket = aws_s3_bucket.www_bucket.id
-
-  cors_rule {
-    allowed_headers = ["Authorization", "Content-Length"]
-    allowed_methods = ["GET", "POST"]
-    allowed_origins = ["https://www.${var.domain_name}", "https://${var.domain_name}"]
-    max_age_seconds = 3000
-  }
-}
-
 resource "aws_s3_bucket_public_access_block" "www_bucket" {
   bucket = aws_s3_bucket.www_bucket.bucket
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_policy" "www_bucket" {
-  bucket = aws_s3_bucket.www_bucket.bucket
-
-  policy = <<EOT
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-            "Sid": "PublicReadGetObject",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${aws_s3_bucket.www_bucket.bucket}/*"
-        }
-  ]
-
+# Assign bucket policy to let the CloudFront OAI get objects
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.www_bucket.id
+  policy = data.aws_iam_policy_document.bucket_policy_document.json
 }
-EOT
 
-  depends_on = [
-    aws_s3_bucket_public_access_block.www_bucket,
-  ]
+# Define bucket policy
+data "aws_iam_policy_document" "bucket_policy_document" {
+  statement {
+    actions = ["s3:GetObject"]
+    resources = [
+      aws_s3_bucket.www_bucket.arn,
+      "${aws_s3_bucket.www_bucket.arn}/*"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.oai.iam_arn]
+    }
+  }
 }

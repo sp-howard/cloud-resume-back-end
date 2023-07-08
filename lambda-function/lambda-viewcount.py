@@ -34,6 +34,7 @@ def lambda_handler(event: any, context: any):
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin' : '*'
         },
         'body': updated_viewcount
     }
