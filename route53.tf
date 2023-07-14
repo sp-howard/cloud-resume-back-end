@@ -36,15 +36,15 @@ resource "aws_route53_record" "redirect" {
 }
 
 # Viewcount API
-resource "aws_route53_record" "viewcount" {
+resource "aws_route53_record" "api" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "api"
   type    = "A"
 
-  # Redirect S3 Bucket
+  # API Gateway Domain Name
   alias {
-    name                   = "${aws_s3_bucket.redirect_bucket.website_domain}"
-    zone_id                = "${aws_s3_bucket.redirect_bucket.hosted_zone_id}"
+    name                   = "${aws_api_gateway_domain_name.api-domain.cloudfront_domain_name}"
+    zone_id                = "${aws_api_gateway_domain_name.api-domain.cloudfront_zone_id}"
     evaluate_target_health = false
   }
 
