@@ -45,7 +45,9 @@ jobs:
         with:
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+
   cypress:
+    name: "Cypress End-to-End Test"
     runs-on: ubuntu-22.04
     needs: terraform
     steps:
