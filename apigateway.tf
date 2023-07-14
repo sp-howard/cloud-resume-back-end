@@ -129,3 +129,17 @@ resource "aws_lambda_permission" "apigw_lambda" {
 output "viewcount_invoke_url" {
     value = "${aws_api_gateway_deployment.deployment.invoke_url}/viewcount"
 }
+################# Custom Domain #################
+
+# Custom Domain
+resource "aws_api_gateway_domain_name" "api-domain" {
+  certificate_arn = aws_acm_certificate_validation.cert_validation.certificate_arn
+  domain_name     = "api.stevenhoward.net"
+}
+
+# API Mapping for Custom Domain
+resource "aws_api_gateway_base_path_mapping" "api" {
+  api_id      = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_deployment.deployment.stage_name
+  domain_name = aws_api_gateway_domain_name.api-domain.domain_name
+}

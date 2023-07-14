@@ -1,9 +1,11 @@
 ################# Route53 ##################
 
+# Create Host Zone
 resource "aws_route53_zone" "main" {
   name = var.domain_name
 }
 
+# A record to Cloudfront alias
 resource "aws_route53_record" "www-a" {
   zone_id = aws_route53_zone.main.zone_id
   name    = var.domain_name
@@ -16,14 +18,39 @@ resource "aws_route53_record" "www-a" {
     evaluate_target_health = false
   }
 
-  # S3 Endpoint for testing
-  /* alias {
-    name                   = "s3-website-us-west-2.amazonaws.com"
-    zone_id                = aws_s3_bucket.www_bucket.hosted_zone_id
-    evaluate_target_health = false
-  } */
 }
 
+# Redirect WWW to Root
+resource "aws_route53_record" "redirect" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "www"
+  type    = "A"
+
+  # Redirect S3 Bucket
+  alias {
+    name                   = "${aws_s3_bucket.redirect_bucket.website_domain}"
+    zone_id                = "${aws_s3_bucket.redirect_bucket.hosted_zone_id}"
+    evaluate_target_health = false
+  }
+
+}
+
+# Viewcount API
+resource "aws_route53_record" "viewcount" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "api"
+  type    = "A"
+
+  # Redirect S3 Bucket
+  alias {
+    name                   = "${aws_s3_bucket.redirect_bucket.website_domain}"
+    zone_id                = "${aws_s3_bucket.redirect_bucket.hosted_zone_id}"
+    evaluate_target_health = false
+  }
+
+}
+
+# Replace registered domain's name servers
 resource "aws_route53domains_registered_domain" "domain" {
   domain_name = var.domain_name
 
@@ -41,10 +68,7 @@ resource "aws_route53domains_registered_domain" "domain" {
   }
 }
 
-/* depends_on = [output.route53_ns] */
-
-
-# For ACM certificate validation
+# Add DNS records for ACM certificate validation
 resource "aws_route53_record" "main" {
   for_each = {
     for dvo in aws_acm_certificate.ssl_certificate.domain_validation_options : dvo.domain_name => {
@@ -60,3 +84,4 @@ resource "aws_route53_record" "main" {
   type            = each.value.type
   zone_id         = aws_route53_zone.main.zone_id
 } 
+
